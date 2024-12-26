@@ -1,26 +1,28 @@
-function initializeTracking(campaignId) {
-  const visitorId = localStorage.getItem('visitorId') || 
-    Math.random().toString(36).substring(2) + Date.now().toString(36);
-  
-  localStorage.setItem('visitorId', visitorId);
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
-  const currentUrl = window.location.href;
-  const urlParams = new URLSearchParams(window.location.search);
-  const isThankYouPage = currentUrl.includes('/obrigado') || currentUrl.includes('/thank-you');
-  const isConversion = isThankYouPage && urlParams.get('lead') === 'true';
+    function initializeTracking(campaignId) {
+      const visitorId = localStorage.getItem('visitorId') ||
+        Math.random().toString(36).substring(2) + Date.now().toString(36);
 
-  const pageType = isThankYouPage ? 'thank_you' : 'capture';
+      localStorage.setItem('visitorId', visitorId);
 
-  fetch('YOUR_API_URL/track', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      campaignId,
-      visitorId,
-      pageType,
-      isConversion,
-    }),
-  }).catch(console.error);
-}
+      const currentUrl = window.location.href;
+      const urlParams = new URLSearchParams(window.location.search);
+      const isThankYouPage = currentUrl.includes('/obrigado') || currentUrl.includes('/thank-you');
+      const isConversion = isThankYouPage && urlParams.get('lead') === 'true';
+
+      const pageType = isThankYouPage ? 'thank_you' : 'capture';
+
+      fetch(`${baseUrl}/track`, { // Use baseUrl here
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          campaignId,
+          visitorId,
+          pageType,
+          isConversion,
+        }),
+      }).catch(console.error);
+    }
